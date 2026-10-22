@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#fff4f6">
+<title>A Little Birthday Puzzle for Arsh</title>
+<style>
+:root{--bg:#fff4f6;--paper:#fffdfd;--ink:#45343d;--muted:#927d86;--pink:#c9829b;--pink2:#f6dfe7;--line:#eed5de;--good:#39765b;--bad:#a94c5b}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;padding:22px 15px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at top,#fffdfd 0,#fff4f6 48%,#f7e4eb 100%);color:var(--ink);font-family:Georgia,'Times New Roman',serif}
+.app{width:min(100%,590px);margin:auto}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:24px;padding:clamp(25px,6vw,46px);box-shadow:0 18px 55px #9d65741a;text-align:center;min-height:450px;display:flex;flex-direction:column;align-items:center;justify-content:center;animation:fade .3s ease}
+@keyframes fade{from{opacity:.5;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.kicker{font:10px/1.5 Arial,sans-serif;text-transform:uppercase;letter-spacing:.22em;color:var(--pink);margin-bottom:18px}
+h1{font-size:clamp(36px,8vw,55px);font-weight:normal;line-height:1.08;letter-spacing:-.035em;margin:0 0 20px}
+h2{font-size:clamp(27px,6vw,37px);font-weight:normal;line-height:1.15;margin:0 0 18px}
+p{font-size:17px;line-height:1.8;margin:0 0 18px;white-space:pre-line}
+.small{font:12px/1.8 Arial,sans-serif;color:var(--muted)}
+.ornament{font-size:26px;color:var(--pink);margin-bottom:18px}
+.rule{width:45px;height:1px;background:var(--pink);margin:8px auto 22px}
+.btn{border:0;border-radius:999px;background:var(--pink);color:white;padding:14px 23px;font:13px Arial,sans-serif;letter-spacing:.04em;cursor:pointer;margin-top:10px;transition:transform .15s,opacity .15s}
+.btn:hover{transform:translateY(-1px)}.btn:disabled{opacity:.45;cursor:not-allowed}
+.options{display:grid;gap:10px;width:100%;margin:10px 0 12px}
+.option{display:block;width:100%;text-align:left;padding:15px 17px;border:1px solid var(--line);border-radius:14px;background:#fffafa;color:var(--ink);font:15px/1.45 Georgia,serif;cursor:pointer}
+.option:hover{border-color:var(--pink);background:#fff5f8}
+.option.selected{border-color:var(--pink);background:var(--pink2)}
+.feedback{width:100%;border-radius:14px;padding:14px 16px;background:#fff2f5;font:14px/1.65 Arial,sans-serif;margin:4px 0 8px}
+.feedback.good{color:var(--good);background:#eff8f2}.feedback.bad{color:var(--bad)}
+.hidden{display:none!important}
+.footer{font:10px Arial,sans-serif;color:#ad98a0;text-align:center;margin-top:14px;letter-spacing:.08em}
+a{color:var(--pink)}
+@media(max-width:420px){.card{min-height:470px;padding:26px 20px;border-radius:20px}.option{padding:14px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="app">
+  <section class="card" id="card" aria-live="polite"></section>
+  <div class="footer">A LITTLE SOMETHING, JUST FOR YOU ♡</div>
+</main>
+<script>
+const card = document.getElementById('card');
+let page = 0;
+const answers = {};
+const pages = [
+  {type:'home'},
+  {type:'puzzle1'},
+  {type:'puzzle2'},
+  {type:'wishes'},
+  {type:'gift'}
+];
+
+function button(label, action, extra='') {
+  return `<button class="btn ${extra}" type="button" id="mainBtn">${label}</button>`;
+}
+function render() {
+  const p = pages[page];
+  if (p.type === 'home') {
+    card.innerHTML = `<div class="ornament">✿</div><div class="kicker">A small birthday thing</div>
+      <h1>Happy Birthday,<br>Arsh</h1><div class="rule"></div>
+      <p>For one of the loveliest souls I’ve ever come across.</p>
+      <p class="small">I made a little something for you. Take your time with it.</p>
+      ${button('Let’s begin →')}`;
+    document.getElementById('mainBtn').onclick = () => {page=1;render();};
+  } else if (p.type === 'puzzle1') {
+    renderPuzzle({
+      kicker:'Puzzle 01 · A little movie memory',
+      question:'Which movie did you send me on Telegram?',
+      options:[
+        {id:'voicemails',label:'Voicemails of Isabelle',correct:true, message:'That’s the one! You remembered. 💗'},
+        {id:'deadpoets',label:'Dead Poet’s Society',correct:false, message:'No no, this one I’ve sent you 😌'},
+        {id:'otto',label:'A Man Called Otto',correct:false, message:'The heroine resembles you 🤭'}
+      ],
+      next:()=>{page=2;render();}
+    });
+  } else if (p.type === 'puzzle2') {
+    renderPuzzle({
+      kicker:'Puzzle 02 · One song, one dance',
+      question:'Which song did you tell me you wanted to dance to?',
+      options:[
+        {id:'chikni',label:'Chikni Chameli',correct:false, message:'Really? Even though I would like to see that, but this time think again 😂'},
+        {id:'kalyani',label:'Kalyani',correct:true, message:'You got it right! That’s the one. 💗'},
+        {id:'sasikala',label:'Sasikala Charthiya',correct:false, message:'Just kidding yaar 😭 Try again!'}
+      ],
+      next:()=>{page=3;render();}
+    });
+  } else if (p.type === 'wishes') {
+    card.innerHTML = `<div class="ornament">♡</div><div class="kicker">A few words for you</div>
+      <h2>To a soul like yours</h2><div class="rule"></div>
+      <p>Some people have a way of making the world feel a little softer just by being themselves. You’re one of those people, Arsh.</p>
+      <p>I hope this year brings you the kind of happiness you give to others, little reasons to smile, and more beautiful moments than you expect.</p>
+      <p>Never forget how special you are. Happy birthday. 🤍</p>
+      ${button('One last thing →')}`;
+    document.getElementById('mainBtn').onclick = () => {page=4;render();};
+  } else {
+    card.innerHTML = `<div class="ornament">❀</div><div class="kicker">Your little surprise</div>
+      <h2>For the Soul I Found</h2><div class="rule"></div>
+      <p>I wanted to give you something made with a little more time and a lot of thought.</p>
+      <p>A small online book of poems, little things, and words I wanted you to have.</p>
+      <p class="small">Your book is a separate page. Once you publish it, add its Netlify link to the button below.</p>
+      <button class="btn" type="button" id="bookBtn">Open your book ↗</button>
+      <p class="small" style="margin-top:15px">A little book, just for you. ♡</p>`;
+    document.getElementById('bookBtn').onclick = () => {
+      // Replace BOOK_URL below with the public URL of your poetry book on Netlify.
+      const BOOK_URL = 'https://gilded-mooncake-1f5551.netlify.app/';
+      if (BOOK_URL.startsWith('https://')) window.location.href = BOOK_URL;
+      else alert('Your book link will go here after you publish “For the Soul I Found” on Netlify.');
+    };
+  }
+}
+function renderPuzzle(data) {
+  card.innerHTML = `<div class="kicker">${data.kicker}</div><h2>${data.question}</h2>
+    <div class="options" id="options"></div>
+    <div id="feedback" class="feedback hidden" role="status"></div>
+    <button class="btn hidden" id="continueBtn" type="button">Continue →</button>`;
+  const opts = document.getElementById('options');
+  data.options.forEach(opt => {
+    const b = document.createElement('button');
+    b.type='button'; b.className='option'; b.textContent=opt.label;
+    b.onclick = () => {
+      opts.querySelectorAll('button').forEach(x=>x.classList.remove('selected'));
+      b.classList.add('selected');
+      const feedback = document.getElementById('feedback');
+      feedback.classList.remove('hidden','good','bad');
+      feedback.textContent = opt.message;
+      if (opt.correct) {
+        feedback.classList.add('good');
+        document.getElementById('continueBtn').classList.remove('hidden');
+        document.getElementById('continueBtn').onclick = data.next;
+      } else {
+        feedback.classList.add('bad');
+        document.getElementById('continueBtn').classList.add('hidden');
+      }
+    };
+    opts.appendChild(b);
+  });
+}
+render();
+</script>
+</body>
+</html>
